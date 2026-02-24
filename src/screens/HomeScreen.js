@@ -4,7 +4,10 @@ import React from 'react'
 export default function HomeScreen() {
   return (
     <View>
-      <Text>HomeScreen</Text>
+      <Text>HomeScreen
+        kl;ajsdfk asdf asd dfsa 
+        
+      </Text>
     </View>
   )
 }
