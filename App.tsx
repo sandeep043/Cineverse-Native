@@ -13,25 +13,15 @@ import ProfileScreen from '../Cineverse/src/screens/ProfileScreen';
 import FavoritesScreen from '../Cineverse/src/screens/FavouriteScreen'; 
 import RootNavigation from './src/navigation/RootNavigator';
 
+function SafeAreaWrapper() {
+  const insets = useSafeAreaInsets();
 
-
-const Stack = createNativeStackNavigator()  
-const Tab = createBottomTabNavigator();
-
-// function RootNavigation(){ 
-//   return (
-
-//   <NavigationContainer>
-//    <Stack.Navigator> 
-//     <Stack.Screen name='Home' component={HomeScreen} />
-//     <Stack.Screen name='Search' component={SearchScreen} /> 
-//     <Stack.Screen name='Profile' component={ProfileScreen} />  
-//     <Stack.Screen name='Favorites' component={FavoritesScreen} />
-//     </Stack.Navigator>
-//     </NavigationContainer>
-//   )
-
-// }
+  return (
+    <View style={[styles.container, { paddingTop: insets.top,}]}>
+      <RootNavigation />
+    </View>
+  );
+}
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -39,7 +29,7 @@ function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-     <RootNavigation />
+      <SafeAreaWrapper />
     </SafeAreaProvider>
   );
 }
