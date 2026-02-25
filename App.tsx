@@ -13,27 +13,17 @@ import { NavigationContainer } from '@react-navigation/native';
 // import FavoritesScreen from '../Cineverse/src/screens/FavouriteScreen'; 
 import RootNavigation from './src/navigation/RootNavigator';
 import { Provider } from 'react-redux';
-import { store } from './src/Redux/store';
+import { store } from './src/Redux/store';    
 
+function SafeAreaWrapper() {
+  const insets = useSafeAreaInsets();
 
-
-const Stack = createNativeStackNavigator()  
-const Tab = createBottomTabNavigator();
-
-// function RootNavigation(){ 
-//   return (
-
-//   <NavigationContainer>
-//    <Stack.Navigator> 
-//     <Stack.Screen name='Home' component={HomeScreen} />
-//     <Stack.Screen name='Search' component={SearchScreen} /> 
-//     <Stack.Screen name='Profile' component={ProfileScreen} />  
-//     <Stack.Screen name='Favorites' component={FavoritesScreen} />
-//     </Stack.Navigator>
-//     </NavigationContainer>
-//   )
-
-// }
+  return (
+    <View style={[styles.container, { paddingTop: insets.top,}]}>
+      <RootNavigation />
+    </View>
+  );
+}
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -41,10 +31,8 @@ function App() {
   return (
    <Provider store={store}>
     <SafeAreaProvider>
-      <View style={styles.container}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <RootNavigation />
-      </View>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <SafeAreaWrapper />
     </SafeAreaProvider>
    </Provider>  
   );
