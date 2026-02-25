@@ -7,11 +7,13 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeScreen from '../Cineverse/src/screens/HomeScreen';
-import SearchScreen from '../Cineverse/src/screens/SearchScreen';
-import ProfileScreen from '../Cineverse/src/screens/ProfileScreen';
-import FavoritesScreen from '../Cineverse/src/screens/FavouriteScreen'; 
+// import HomeScreen from '../Cineverse/src/screens/HomeScreen';
+// import SearchScreen from '../Cineverse/src/screens/SearchScreen';
+// import ProfileScreen from '../Cineverse/src/screens/ProfileScreen';
+// import FavoritesScreen from '../Cineverse/src/screens/FavouriteScreen'; 
 import RootNavigation from './src/navigation/RootNavigator';
+import { Provider } from 'react-redux';
+import { store } from './src/Redux/store';    
 
 function SafeAreaWrapper() {
   const insets = useSafeAreaInsets();
@@ -27,10 +29,12 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
+   <Provider store={store}>
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <SafeAreaWrapper />
     </SafeAreaProvider>
+   </Provider>  
   );
 }
 
