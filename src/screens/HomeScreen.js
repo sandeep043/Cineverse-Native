@@ -8,9 +8,9 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.mainContainer}>
-     
+       <SearchBar />
       <HomeCoursel />
-      <SearchBar />
+    
       <Text style={{color:'white'}} >HomeScreen
         kl;ajsdfk asdf asd dfsa 
         
