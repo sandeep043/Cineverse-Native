@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native'
+import { getImageUrl, BACKDROP_SIZE } from '../services/tmdbConfig'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 const ITEM_WIDTH = Math.round(SCREEN_WIDTH * 0.78)
@@ -63,17 +64,22 @@ export default function HomeCoursel({ data = SAMPLE_DATA, onPressItem }) {
             style={[styles.itemWrapper, { marginRight: SPACING }]}
             onPress={() => onPressItem && onPressItem(item)}
           >
+            {/* prefer explicit image property but fall back to TMDB's poster_path/backdrop_path */}
             <ImageBackground
-              source={{ uri: item.image }}
+              source={{
+                uri:
+                  item.image ||
+                  getImageUrl(item.backdrop_path, BACKDROP_SIZE),
+              }}
               style={styles.image}
               imageStyle={styles.imageStyle}
             >
               <View style={styles.overlay} />
               <View style={styles.textWrap}>
                 <Text numberOfLines={2} style={styles.title}>
-                  {item.title}
+                  {item.title || item.name}
                 </Text>
-                <Text style={styles.date}>{item.date}</Text>
+                <Text style={styles.date}>{item.date || item.release_date}</Text>
               </View>
             </ImageBackground>
           </TouchableOpacity>
@@ -137,6 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 12,
+    alignSelf: 'center',
   },
   dot: {
     width: 8,
