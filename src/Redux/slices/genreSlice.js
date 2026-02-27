@@ -21,6 +21,7 @@ const genreSlice = createSlice({
         builder.addCase(fetchGenresThunk.fulfilled, (state, action) => {
             state.loading = false;
             state.genres = action.payload;
+            console.log("Updated genres in state:", action.payload);
         });     
         builder.addCase(fetchGenresThunk.rejected, (state, action) => {
             state.loading = false;

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+  import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
@@ -37,7 +37,7 @@ export default function HomeTabs() {
           }
 
           if (focused) {
-            console.log('Focused Tab jagan:', route.name);
+          
             return (
               <View style={styles.activeTab}>
                 <Ionicons name={iconName} size={24} color="#00E5FF" />

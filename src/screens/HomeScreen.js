@@ -1,37 +1,110 @@
-import {StyleSheet, View, Text } from 'react-native'
+import {StyleSheet, View, Text, FlatList, ScrollView } from 'react-native'
 import React from 'react'
 import HomeCoursel from '../utilities/HomeCoursel'
 import  SearchBar  from '../utilities/SearchBar'
+import MostpopularCard from '../utilities/MostpopularCard';
+import TrendingMoviesCard from '../utilities/TrendingMoviesCard';
 import { useSelector } from 'react-redux';
 import { fetchGenresThunk } from '../Redux/Thunks/genreThunks';
 import { useDispatch } from 'react-redux';  
 import { useEffect } from 'react';      
+import Categories from '../utilities/Categories'; 
+import { fetchPopularMoviesThunk } from '../Redux/Thunks/popularThunks';
+import { fetchTopRatedMoviesThunk } from '../Redux/Thunks/topRatedThunks';
+import { fetchTrendingMoviesThunk } from '../Redux/Thunks/trendingThunks';
+
 
 export default function HomeScreen() {
   const dispatch = useDispatch();
   const { genres, loading, error } = useSelector((state) => state.genre);
+  const { popularMovies, loading: popularLoading, error: popularError } = useSelector((state) => state.popular); 
+  const { topRatedMovies, loading: topRatedLoading, error: topRatedError } = useSelector((state) => state.topRated); 
+  const { trendingMovies, loading: trendingLoading, error: trendingError } = useSelector((state) => state.trending); 
+
   console.log('Genres in HomeScreen:', genres); 
+  console.log('Popular Movies in HomeScreen:', popularMovies); 
+  console.log('Top Rated Movies in HomeScreen:', topRatedMovies); 
+  console.log('Trending Movies in HomeScreen:', trendingMovies); 
 
   useEffect(() => {
+
     dispatch(fetchGenresThunk());
+    dispatch(fetchPopularMoviesThunk());
+    dispatch(fetchTopRatedMoviesThunk());
+    dispatch(fetchTrendingMoviesThunk());
   }, [dispatch]);
 
  
   return (
     <View style={styles.mainContainer}>
+      <ScrollView > 
+
        <SearchBar />
-       <HomeCoursel />
+       {/* feed the carousel with popular movies once they're loaded */}
+       <HomeCoursel data={topRatedMovies} />
+       <Categories categories={genres} />
+
+       {/* most popular horizontal strip */}
+       <View style={styles.sectionHeader}>
+         <Text style={styles.sectionTitle}>Most popular</Text>
+         <Text style={styles.sectionAction}>See All</Text>
+       </View>
+       {popularMovies && popularMovies.length > 0 && (
+         <FlatList
+           data={popularMovies}
+           horizontal
+           showsHorizontalScrollIndicator={false}
+           keyExtractor={(item) => item.id.toString()}
+           contentContainerStyle={{paddingVertical: 8}}
+           renderItem={({item}) => (
+             <MostpopularCard movie={item} genres={genres} />
+           )}
+         />
+       )}
+
+       {/* trending horizontal strip */}
+       <View style={styles.sectionHeader}>
+         <Text style={styles.sectionTitle}>Trending</Text>
+         <Text style={styles.sectionAction}>See All</Text>
+       </View>
+       {trendingMovies && trendingMovies.length > 0 && (
+         <FlatList
+           data={trendingMovies}
+           horizontal
+           showsHorizontalScrollIndicator={false}
+           keyExtractor={(item) => item.id.toString()}
+           contentContainerStyle={{paddingVertical: 8}}
+           renderItem={({item}) => (
+             <TrendingMoviesCard movie={item} genres={genres} />
+           )}
+         />
+       )} 
+        </ScrollView>
+
     </View>
   )
 }  
 
 const styles = StyleSheet.create({
-
   mainContainer: {
-  flex: 1,
-  backgroundColor: '#000',
-  padding: 10
-},
-
-
-})
+    flex: 1,
+    backgroundColor: '#000',
+    padding: 10,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 2,
+  },
+  sectionTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  sectionAction: {
+    color: '#00E5FF',
+    fontSize: 14,
+  },
+});
