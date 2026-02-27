@@ -44,7 +44,18 @@ export const Trending= async () => {
         throw error;
     }
 }
+ 
 
+export const getMovieDetails = async (movieId) => { 
+    try {
+        const response = await api.get(`/movie/${movieId}`); 
+        return response.data;
+    } 
+    catch (error) {
+        console.error(`Error fetching details for movie ID ${movieId}:`, error);
+        throw error;
+    }
+}
 
 
 
