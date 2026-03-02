@@ -1,17 +1,23 @@
-  import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+  import { View, Text, StyleSheet,  ActivityIndicator } from 'react-native'
+import React, { Suspense, lazy } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import SearchScreen from '../screens/SearchScreen';
-import ProfileScreen from '../screens/ProfileScreen'; 
-import FavoritesScreen from '../screens/FavouriteScreen';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// import HomeScreen from '../screens/HomeScreen';
+// import SearchScreen from '../screens/SearchScreen';
+// import ProfileScreen from '../screens/ProfileScreen'; 
+// import FavoritesScreen from '../screens/FavouriteScreen';
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
+
+const HomeScreen = lazy(() => import('../screens/HomeScreen'));
+const SearchScreen = lazy(() => import('../screens/SearchScreen'));
+const ProfileScreen = lazy(() => import('../screens/ProfileScreen'));
+const FavoritesScreen = lazy(() => import('../screens/FavouriteScreen'));
 
 
 const Tab = createBottomTabNavigator();
 
 export default function HomeTabs() {
   return (
+    <Suspense fallback={<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><ActivityIndicator size="large" color="#0000ff" /></View>}>
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
@@ -54,6 +60,7 @@ export default function HomeTabs() {
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
     </Tab.Navigator>
+    </Suspense>
   );
 } 
 

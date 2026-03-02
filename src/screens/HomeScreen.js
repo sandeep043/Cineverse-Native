@@ -1,30 +1,33 @@
 import {StyleSheet, View, Text, FlatList, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import HomeCoursel from '../utilities/HomeCoursel'
 import  SearchBar  from '../utilities/SearchBar'
 import MostpopularCard from '../utilities/MostpopularCard';
 import TrendingMoviesCard from '../utilities/TrendingMoviesCard';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { fetchGenresThunk } from '../Redux/Thunks/genreThunks';
-import { useDispatch } from 'react-redux';  
-import { useEffect } from 'react';      
 import Categories from '../utilities/Categories'; 
 import { fetchPopularMoviesThunk } from '../Redux/Thunks/popularThunks';
 import { fetchTopRatedMoviesThunk } from '../Redux/Thunks/topRatedThunks';
-import { fetchTrendingMoviesThunk } from '../Redux/Thunks/trendingThunks';
+import { fetchTrendingMoviesThunk } from '../Redux/Thunks/trendingThunks'; 
+import { useNavigation } from '@react-navigation/native'; 
 
 
-export default function HomeScreen() {
+
+export default function HomeScreen() { 
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const { genres, loading, error } = useSelector((state) => state.genre);
   const { popularMovies, loading: popularLoading, error: popularError } = useSelector((state) => state.popular); 
   const { topRatedMovies, loading: topRatedLoading, error: topRatedError } = useSelector((state) => state.topRated); 
-  const { trendingMovies, loading: trendingLoading, error: trendingError } = useSelector((state) => state.trending); 
+  const { trendingMovies, loading: trendingLoading, error: trendingError } = useSelector((state) => state.trending);  
+  const { movieDetails, loading: movieDetailsLoading, error: movieDetailsError } = useSelector((state) => state.movieDetails);  
 
-  console.log('Genres in HomeScreen:', genres); 
-  console.log('Popular Movies in HomeScreen:', popularMovies); 
-  console.log('Top Rated Movies in HomeScreen:', topRatedMovies); 
-  console.log('Trending Movies in HomeScreen:', trendingMovies); 
+  // console.log('Genres in HomeScreen:', genres); 
+  // console.log('Popular Movies in HomeScreen:', popularMovies); 
+  // console.log('Top Rated Movies in HomeScreen:', topRatedMovies); 
+  // console.log('Trending Movies in HomeScreen:', trendingMovies);
+  // console.log('Movie Details in HomeScreen:', movieDetails);
 
   useEffect(() => {
 
@@ -32,7 +35,12 @@ export default function HomeScreen() {
     dispatch(fetchPopularMoviesThunk());
     dispatch(fetchTopRatedMoviesThunk());
     dispatch(fetchTrendingMoviesThunk());
-  }, [dispatch]);
+  }, [dispatch]); 
+
+ const onPressMovie = (movie) => { 
+    navigation.navigate('MovieDetails', { movieId: movie.id });
+    // dispatch(fetchMovieDetailsThunk(movie.id));
+  }
 
  
   return (
@@ -57,7 +65,7 @@ export default function HomeScreen() {
            keyExtractor={(item) => item.id.toString()}
            contentContainerStyle={{paddingVertical: 8}}
            renderItem={({item}) => (
-             <MostpopularCard movie={item} genres={genres} />
+             <MostpopularCard movie={item} onPress={onPressMovie} genres={genres} />
            )}
          />
        )}
@@ -75,7 +83,7 @@ export default function HomeScreen() {
            keyExtractor={(item) => item.id.toString()}
            contentContainerStyle={{paddingVertical: 8}}
            renderItem={({item}) => (
-             <TrendingMoviesCard movie={item} genres={genres} />
+             <TrendingMoviesCard movie={item} genres={genres} onPress={onPressMovie} />
            )}
          />
        )} 

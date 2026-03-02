@@ -1,11 +1,31 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react' 
+import { View, Text, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native'; 
-import HomeTabs from './HomeTabs';
+import HomeTabs from './HomeTabs'; 
+import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
+// import MovieDetailsScreen from '../screens/MovieDetailsScreen'; 
+
+
+const MovieDetailsScreen= lazy(() => import('../screens/MovieDetailsScreen'));
+
+const Screen = createNativeStackNavigator();
 
 export default function RootNavigator() {
   return (
     <NavigationContainer>
-      <HomeTabs />
+      <Screen.Navigator
+        initialRouteName="HomeTabs"
+        screenOptions={{headerShown: false}}
+      >
+        <Screen.Screen name="HomeTabs" component={HomeTabs} /> 
+
+        
+        <Screen.Screen name="MovieDetails" component={() => (
+         <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+          <MovieDetailsScreen />
+            </Suspense>
+      )} />
+      </Screen.Navigator>
     </NavigationContainer>
   )
 }
