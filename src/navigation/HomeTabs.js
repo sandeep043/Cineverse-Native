@@ -1,6 +1,7 @@
   import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack'; 
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen'; 
@@ -9,8 +10,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const Tab = createBottomTabNavigator();
-
+const Stack = createStackNavigator();
 export default function HomeTabs() {
+
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="HomeMain" component={HomeScreen} />
+      <Stack.Screen name="Search" component={SearchScreen} />  
+    </Stack.Navigator>
+  );
+}
+
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -49,7 +61,7 @@ export default function HomeTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />

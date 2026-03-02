@@ -43,7 +43,24 @@ export const Trending= async () => {
         console.error("Error fetching trending movies:", error);
         throw error;
     }
-}
+} 
+
+export const searchMovies = async (query) => {
+    try {
+        const response = await api.get("/search/movie", {   
+            params: {
+                query: query,
+                include_adult: false,
+                page:1,
+            },
+        });
+        return response.data.results;
+    }   
+    catch (error) {
+        console.error("Error searching movies:", error);
+        throw error;
+    }
+};
 
 
 

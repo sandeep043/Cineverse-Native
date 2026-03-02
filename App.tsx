@@ -1,4 +1,4 @@
-
+import 'react-native-gesture-handler';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import {
   SafeAreaProvider,

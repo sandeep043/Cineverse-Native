@@ -1,10 +1,116 @@
-import { View, Text } from 'react-native'
+// SearchScreen.js
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useRef, useState, useEffect } from 'react';
+import { StyleSheet, View, TextInput, Pressable, Text } from 'react-native'
 import React from 'react'
+import { useDispatch,useSelector } from 'react-redux';
+import { searchMoviesThunk } from '../Redux/Thunks/searchThunk';
+import { clearSearchResults } from '../Redux/slices/SearchSlice';
 
-export default function SearchScreen() {
+
+
+export default function SearchScreen({ navigation }) {
+  const inputRef = useRef(null);
+  const debounceRef = useRef(null);
+  const [query, setQuery] = useState('');
+console.log('SearchScreen rendered with query:', query); 
+  const dispatch = useDispatch();
+  const { results, loading, error } = useSelector((state) => state.search);
+  console.log('Search results from state:', results);
+
+
+
+  useFocusEffect(
+    useCallback(() => {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }, [])
+  ); 
+
+  useEffect(() => {
+    if(debounceRef.current){
+      clearTimeout(debounceRef.current);
+    }
+    
+    if(query.trim()==''){
+      dispatch(clearSearchResults());
+      return;
+    }
+
+    debounceRef.current = setTimeout(() => {
+      dispatch(searchMoviesThunk(query));
+    }, 1000);
+
+    return () => {
+      if(debounceRef.current){
+        clearTimeout(debounceRef.current);
+      }
+    };
+   
+  }, [query]);
+
+
   return (
-    <View>
-      <Text>SearchScreen</Text>
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          ref={inputRef}
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Search..."
+          placeholderTextColor="#6b7280"
+          autoFocus={true}
+          style={styles.searchInput}
+          returnKeyType="search"
+        />
+        <Pressable onPress={() => navigation.goBack()} style={styles.cancelButton}>
+          <Text style={styles.cancelText}>Cancel</Text>
+        </Pressable>
+      </View>
+      {/* your results list */}
     </View>
-  )
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    paddingTop: 40,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginTop: 24,
+    marginBottom: 12,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 48,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  searchInput: {
+    flex: 1,
+    color: '#ffffff',
+    fontSize: 16,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    backgroundColor: 'transparent',
+  },
+  cancelButton: {
+    marginLeft: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+  },
+  cancelText: {
+    color: '#00E5FF',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+});
+
+
