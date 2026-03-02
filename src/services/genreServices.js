@@ -62,3 +62,19 @@ export const getMovieDetails = async (movieId) => {
 
  
 
+export const searchMovies = async (query) => {
+    try {
+        const response = await api.get("/search/movie", {   
+            params: {
+                query: query,
+                include_adult: false,
+                page:1,
+            },
+        });
+        return response.data.results;
+    }   
+    catch (error) {
+        console.error("Error searching movies:", error);
+        throw error;
+    }
+};
