@@ -15,6 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchMovieDetailsThunk } from '../Redux/Thunks/movieDetailsThunks';
 import { getImageUrl, BACKDROP_SIZE } from '../services/tmdbConfig';
 import LinearGradient from 'react-native-linear-gradient'; 
+import { setMovieDetails } from '../Redux/slices/movieDetailsSlice';
 
 import { Clock4 ,Film } from 'lucide-react-native';
 
@@ -80,7 +81,9 @@ export default function MovieDetailsScreen() {
 
       {/* custom header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => (
+         dispatch(setMovieDetails([])),
+         navigation.goBack())}>
           <Ionicons name="arrow-back" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>{title}</Text>
