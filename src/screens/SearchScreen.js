@@ -1,15 +1,23 @@
 // SearchScreen.js
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, Pressable, Text } from 'react-native'
+import { StyleSheet, View, TextInput, Pressable, Text ,FlatList } from 'react-native'
 import React from 'react'
-import { useDispatch,useSelector } from 'react-redux';
+
 import { searchMoviesThunk } from '../Redux/Thunks/searchThunk';
 import { clearSearchResults } from '../Redux/slices/searchSlice';
+
+import SearchCard from '../utilities/SearchCard';
+import { getImageUrl } from '../services/tmdbConfig';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchGenresThunk } from '../Redux/Thunks/genreThunks';
+
 
 
 
 export default function SearchScreen({ navigation }) {
+
+  const { genres, loading:genereLoading, error:genreError } = useSelector((state) => state.genre);
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
   const [query, setQuery] = useState('');
@@ -66,7 +74,20 @@ console.log('SearchScreen rendered with query:', query);
           <Text style={styles.cancelText}>Cancel</Text>
         </Pressable>
       </View>
-      {/* your results list */}
+      {/* Render search results here */}
+      {query && (
+        <FlatList
+          data={results}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <SearchCard
+              data={item}
+              genres={genres}
+              onPress={() => navigation.push('Details', { id: item.id })}
+            />
+          )}
+        />
+      )}
     </View>
   );
 }
@@ -74,8 +95,9 @@ console.log('SearchScreen rendered with query:', query);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 40,
+    backgroundColor: '#121212',
+    paddingTop: 20,
+   
   },
   searchContainer: {
     flexDirection: 'row',
