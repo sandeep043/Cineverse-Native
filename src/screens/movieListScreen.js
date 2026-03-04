@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, use } from 'react';
+import React, { useEffect, useCallback, useRef, useContext } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from 'react-native';
+import { ThemeContext } from '../context/ThemeContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { fetchTrendingMoviesThunk } from '../Redux/Thunks/trendingThunks';
@@ -51,43 +52,49 @@ export default function MovieListScreen() {
     dispatch(fetchTrendingMoviesThunk(page + 1));
   }, [dispatch, loadingMore, page, totalPages]);
 
-  const renderMovieItem = ({ item }) => (
-    <TouchableOpacity style={styles.card}>
-      <Image
-        source={{ uri: item.poster_path }}
-        style={styles.poster}
-      />
+  const renderMovieItem = ({ item }) => {
+    const { colors } = useContext(ThemeContext);
+    return (
+      <TouchableOpacity style={[styles.card, { backgroundColor: colors.card }]}> 
+        <Image
+          source={{ uri: item.poster_path }}
+          style={styles.poster}
+        />
 
-      <View style={styles.details}>
-        <Text style={styles.title} numberOfLines={1}>
-          {item.title}
-        </Text>
+        <View style={styles.details}>
+          <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
+            {item.title}
+          </Text>
 
-        <Text style={styles.subText}>
-          📅 {item.release_date?.split('-')[0]}
-        </Text>
+          <Text style={[styles.subText, { color: colors.mutedText }]}
+            >
+            📅 {item.release_date?.split('-')[0]}
+          </Text>
 
-        <Text style={styles.subText}>
-          ⭐ {item.vote_average}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+          <Text style={[styles.subText, { color: colors.mutedText }]}
+            >
+            ⭐ {item.vote_average}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const { colors } = useContext(ThemeContext);
 
   return (
-    <View style={styles.container}>
-      
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={[styles.back, { color: colors.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Trending Movies</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Trending Movies</Text>
       </View>
 
       {/* First Page Loader */}
       {loading && page === 1 ? (
-        <ActivityIndicator size="large" color="#00E5FF" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 20 }} />
       ) : (
         <FlatList
           data={trendingMovies}
@@ -98,7 +105,7 @@ export default function MovieListScreen() {
           onEndReachedThreshold={0.2}
           ListFooterComponent={
             loadingMore ? (
-              <ActivityIndicator size="small" color="#00E5FF" />
+              <ActivityIndicator size="small" color={colors.primary} />
             ) : null
           }
         />
@@ -110,7 +117,6 @@ export default function MovieListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0D0C1D',
     paddingHorizontal: 16
   },
   header: {
@@ -119,19 +125,16 @@ const styles = StyleSheet.create({
     marginVertical: 16
   },
   back: {
-    color: '#fff',
     fontSize: 22,
     marginRight: 16
   },
   headerTitle: {
-    color: '#fff',
     fontSize: 20,
     fontWeight: '700'
   },
   card: {
     flexDirection: 'row',
     marginBottom: 20,
-    backgroundColor: '#1A1A2E',
     borderRadius: 12,
     overflow: 'hidden'
   },
@@ -145,13 +148,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   title: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 6
   },
   subText: {
-    color: '#aaa',
     fontSize: 13,
     marginBottom: 4
   }

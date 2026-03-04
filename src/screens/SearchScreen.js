@@ -1,8 +1,9 @@
 // SearchScreen.js
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useRef, useState, useEffect } from 'react';
+import { useCallback, useRef, useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, TextInput, Pressable, Text ,FlatList } from 'react-native'
 import React from 'react'
+import { ThemeContext } from '../context/ThemeContext';
 
 import { searchMoviesThunk } from '../Redux/Thunks/searchThunk';
 import { clearSearchResults } from '../Redux/slices/searchSlice';
@@ -57,21 +58,23 @@ console.log('SearchScreen rendered with query:', query);
   }, [query]);
 
 
+  const { colors } = useContext(ThemeContext);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}> 
+      <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
         <TextInput
           ref={inputRef}
           value={query}
           onChangeText={setQuery}
           placeholder="Search..."
-          placeholderTextColor="#6b7280"
+          placeholderTextColor={colors.mutedText}
           autoFocus={true}
-          style={styles.searchInput}
+          style={[styles.searchInput, { color: colors.text }]}
           returnKeyType="search"
         />
         <Pressable onPress={() => navigation.goBack()} style={styles.cancelButton}>
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={[styles.cancelText, { color: colors.primary }]}>Cancel</Text>
         </Pressable>
       </View>
       {/* Render search results here */}
@@ -95,9 +98,7 @@ console.log('SearchScreen rendered with query:', query);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
     paddingTop: 20,
-   
   },
   searchContainer: {
     flexDirection: 'row',
@@ -105,7 +106,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 24,
     marginBottom: 12,
-    backgroundColor: '#1a1a1a',
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 48,
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: '#ffffff',
     fontSize: 16,
     paddingVertical: 0,
     paddingHorizontal: 0,
@@ -129,7 +128,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   cancelText: {
-    color: '#00E5FF',
     fontSize: 16,
     fontWeight: '500',
   },

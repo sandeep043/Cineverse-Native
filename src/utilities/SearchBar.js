@@ -1,24 +1,26 @@
 import { StyleSheet, View, Text ,TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { ThemeContext } from '../context/ThemeContext';
 
 
 export default function SearchBar() {
     const [searchText, setSearchText] = useState('');
+    const { colors } = useContext(ThemeContext);
 
     const handleSearch = () => {
         console.log('Searching for:', searchText);
     };
 
   return (
-    <View style={styles.searchContainer}>
-      <TextInput   style={styles.searchInput}
+    <View style={[styles.searchContainer, { backgroundColor: colors.card }]}> 
+      <TextInput   style={[styles.searchInput, { color: colors.text }]}
                     placeholder="Search"
-                    placeholderTextColor="#6b7280"
+                    placeholderTextColor={colors.mutedText}
                     value={searchText}
                     onChangeText={(text) => setSearchText(text)} />
     
       <Pressable style={styles.searchIcon} onPress={handleSearch}>
-                    <Text>🔍</Text>
+                    <Text style={{ color: colors.text }}>🔍</Text>
       </Pressable>
     </View>
    

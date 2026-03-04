@@ -1,5 +1,5 @@
-import {StyleSheet, View, Text, FlatList, ScrollView } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import {StyleSheet, View, Text, FlatList, ScrollView, Switch } from 'react-native'
+import React, { useCallback, useEffect, useState, useContext } from 'react'
 import HomeCoursel from '../utilities/HomeCoursel'
 import  SearchBar  from '../utilities/SearchBar'
 import MostpopularCard from '../utilities/MostpopularCard';
@@ -13,6 +13,9 @@ import { fetchTrendingMoviesThunk } from '../Redux/Thunks/trendingThunks';
 import { useNavigation } from '@react-navigation/native'; 
 import {fetchMoviesByGenreThunk} from '../Redux/Thunks/genreThunks';
 
+// consume theme context to drive colors and toggle
+import { ThemeContext } from '../context/ThemeContext';
+
 
 export default function HomeScreen() { 
   const navigation = useNavigation();
@@ -24,16 +27,9 @@ export default function HomeScreen() {
   const { movieDetails, loading: movieDetailsLoading, error: movieDetailsError } = useSelector((state) => state.movieDetails);  
   const { genreMovies, loading: genreMoviesLoading, error: genreMoviesError } = useSelector((state) => state.genreMovies);  
 
-  const [selectedGenre, setSelectedGenre] = useState(null); 
+  const [selectedGenre, setSelectedGenre] = useState(null);  
 
-
-     
-
-  // console.log('Genres in HomeScreen:', genres); 
-  // console.log('Popular Movies in HomeScreen:', popularMovies); 
-  // console.log('Top Rated Movies in HomeScreen:', topRatedMovies); 
-  // console.log('Trending Movies in HomeScreen:', trendingMovies);
-  // // console.log('Movie Details in HomeScreen:', movieDetails);
+  const { colors, isDark, toggleTheme } = useContext(ThemeContext);
   // console.log('Movies by Genre in HomeScreen:', genreMovies);
 
   useEffect(() => {
@@ -65,7 +61,17 @@ export default function HomeScreen() {
 
 
   return (
-    <View style={styles.mainContainer}>
+    <View style={[styles.mainContainer, { backgroundColor: colors.background }]}>      
+      {/* simple toggle placed at top right of HomeScreen */}
+      <View style={styles.toggleRow}>
+        <Text style={[styles.toggleLabel, { color: colors.text }]}>Dark mode</Text>
+        <Switch
+          value={isDark}
+          onValueChange={toggleTheme}
+          thumbColor={colors.primary}
+        />
+      </View>
+
       <ScrollView > 
 
        <SearchBar />
@@ -78,8 +84,8 @@ export default function HomeScreen() {
 
        {/* most popular horizontal strip */}
        <View style={styles.sectionHeader}>
-         <Text style={styles.sectionTitle}>{sectionTitle}</Text>
-         <Text style={styles.sectionAction}>See All</Text>
+         <Text style={[styles.sectionTitle, { color: colors.text }]}>{sectionTitle}</Text>
+         <Text style={[styles.sectionAction, { color: colors.primary }]}>See All</Text>
        </View>
        {moviesToShow && moviesToShow.length > 0 && (
          <FlatList
@@ -96,8 +102,8 @@ export default function HomeScreen() {
 
        {/* trending horizontal strip */}
        <View style={styles.sectionHeader}>
-         <Text style={styles.sectionTitle}>Trending</Text>
-         <Text style={styles.sectionAction} onPress={() => navigation.navigate('MovieList')}>See All</Text>
+         <Text style={[styles.sectionTitle, { color: colors.text }]}>Trending</Text>
+         <Text style={[styles.sectionAction, { color: colors.primary }]} onPress={() => navigation.navigate('MovieList')}>See All</Text>
        </View>
        {trendingMovies && trendingMovies.length > 0 && (
          <FlatList
@@ -120,8 +126,17 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#000',
     padding: 10,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: 8,
+  },
+  toggleLabel: {
+    marginRight: 8,
+    fontSize: 14,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -131,12 +146,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   sectionTitle: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: '700',
   },
   sectionAction: {
-    color: '#00E5FF',
     fontSize: 14,
   },
 });

@@ -1,10 +1,13 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function Categories({ categories, onSelectGenre, selectedGenre }) {
+  const { colors } = useContext(ThemeContext);
+
   return (
     <View>
-      <Text style={{color:'white', padding: 10, fontSize: 18}}>
+      <Text style={{color: colors.text, padding: 10, fontSize: 18}}>
         Categories
       </Text> 
 
@@ -24,10 +27,10 @@ export default function Categories({ categories, onSelectGenre, selectedGenre })
                 paddingHorizontal: 15,
                 paddingVertical: 8,
                 borderRadius: 20,
-                backgroundColor: isSelected ? '#00BFFF' : '#222'
+                backgroundColor: isSelected ? colors.primary : colors.card
               }}
             >
-              <Text style={{ color: 'white' }}>
+              <Text style={{ color: colors.text }}>
                 {item.name}
               </Text>
             </TouchableOpacity>

@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useContext } from 'react'
+import { ThemeContext } from '../context/ThemeContext';
 import {
   View,
   Text,
@@ -37,6 +38,7 @@ const SAMPLE_DATA = [
 ]
 
 export default function HomeCoursel({ data = SAMPLE_DATA, onPressItem }) {
+  const { colors } = useContext(ThemeContext);
   const scrollRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -76,10 +78,10 @@ export default function HomeCoursel({ data = SAMPLE_DATA, onPressItem }) {
             >
               <View style={styles.overlay} />
               <View style={styles.textWrap}>
-                <Text numberOfLines={2} style={styles.title}>
+                <Text numberOfLines={2} style={[styles.title, { color: colors.text }]}> 
                   {item.title || item.name}
                 </Text>
-                <Text style={styles.date}>{item.date || item.release_date}</Text>
+                <Text style={[styles.date, { color: colors.mutedText }]}>{item.date || item.release_date}</Text>
               </View>
             </ImageBackground>
           </TouchableOpacity>
@@ -129,13 +131,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 6,
   },
   date: {
-    color: '#d6d6d6',
     fontSize: 12,
   },
   dots: {

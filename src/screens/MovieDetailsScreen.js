@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native'
-import React, { useEffect } from 'react' 
+import React, { useEffect, useContext } from 'react' 
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,6 +16,7 @@ import { fetchMovieDetailsThunk } from '../Redux/Thunks/movieDetailsThunks';
 import { getImageUrl, BACKDROP_SIZE } from '../services/tmdbConfig';
 import LinearGradient from 'react-native-linear-gradient'; 
 import { setMovieDetails } from '../Redux/slices/movieDetailsSlice';
+import { ThemeContext } from '../context/ThemeContext';
 
 import { Clock4 ,Film } from 'lucide-react-native';
 
@@ -25,6 +26,7 @@ export default function MovieDetailsScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { movieDetails, loading: movieDetailsLoading, error: movieDetailsError } = useSelector((state) => state.movieDetails);
+  const { colors } = useContext(ThemeContext);
 
   // grab movieId from params
   const { movieId } = navigation.getState().routes.find(route => route.name === 'MovieDetails').params;
@@ -37,16 +39,16 @@ export default function MovieDetailsScreen() {
 
   if (movieDetailsLoading) {
     return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#00E5FF" />
+      <View style={[styles.loaderContainer, {backgroundColor: colors.background}]}> 
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   if (movieDetailsError) {
     return (
-      <View style={styles.loaderContainer}>
-        <Text style={styles.errorText}>Unable to load movie details.</Text>
+      <View style={[styles.loaderContainer, {backgroundColor: colors.background}]}> 
+        <Text style={[styles.errorText, {color: colors.text}]}>Unable to load movie details.</Text>
       </View>
     );
   } 
@@ -62,7 +64,7 @@ export default function MovieDetailsScreen() {
   const runtime = movieDetails.runtime ? `${movieDetails.runtime}m` : ' ';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}> 
       {backdrop && (
         <ImageBackground
           source={{ uri: backdrop }}
@@ -80,15 +82,15 @@ export default function MovieDetailsScreen() {
       )}
 
       {/* custom header */}
-      <View style={styles.header}>
+      <View style={[styles.header, {backgroundColor: colors.background}]}>  
         <TouchableOpacity onPress={() => (
          dispatch(setMovieDetails([])),
          navigation.goBack())}>
-          <Ionicons name="arrow-back" size={28} color="#fff" />
+          <Ionicons name="arrow-back" size={28} color={colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>{title}</Text>
+        <Text style={[styles.headerTitle, {color: colors.text}]} numberOfLines={1}>{title}</Text>
         <TouchableOpacity onPress={() => { /* TODO: favorite toggle */ }}>
-          <Ionicons name="heart-outline" size={28} color="#fff" />
+          <Ionicons name="heart-outline" size={28} color={colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -99,25 +101,25 @@ export default function MovieDetailsScreen() {
           </View>
         )}
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{title}</Text>
-          {movieDetails.tagline ? <Text style={styles.tagline}>{movieDetails.tagline}</Text> : null}
+          <Text style={[styles.title, {color: colors.text}]}>{title}</Text>
+          {movieDetails.tagline ? <Text style={[styles.tagline, {color: colors.mutedText}]}>{movieDetails.tagline}</Text> : null}
           <View style={styles.detailsRow}>
             {releaseYear && (
               <View style={styles.detailItem}>
-                <Ionicons name="calendar" color='#ccc' size={14} />
-                <Text style={styles.detailsText}>{releaseYear}</Text>
+                <Ionicons name="calendar" color={colors.mutedText} size={14} />
+                <Text style={[styles.detailsText, {color: colors.mutedText}]}>{releaseYear}</Text>
               </View>
             )}
             {runtime && (
               <View style={styles.detailItem}>
-                <Clock4 color='#ccc' size={14} />
-                <Text style={styles.detailsText}>{runtime}</Text>
+                <Clock4 color={colors.mutedText} size={14} />
+                <Text style={[styles.detailsText, {color: colors.mutedText}]}>{runtime}</Text>
               </View>
             )}
             {genres && (
               <View style={styles.detailItem}>
-                <Film color='#ccc' size={14} />
-                <Text style={styles.detailsText}>{genres}</Text>
+                <Film color={colors.mutedText} size={14} />
+                <Text style={[styles.detailsText, {color: colors.mutedText}]}>{genres}</Text>
               </View>
             )}
           </View>
@@ -127,7 +129,7 @@ export default function MovieDetailsScreen() {
               <Text style={styles.ratingText}>{rating}</Text>
             </View>
           )}
-          <Text style={styles.overview}>{movieDetails.overview}</Text>
+          <Text style={[styles.overview, {color: colors.text}]}>{movieDetails.overview}</Text>
         </View>
       </ScrollView>
     </View>
@@ -138,16 +140,13 @@ export default function MovieDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
   },
   errorText: {
-    color: '#fff',
   },
   header: {
     height: 60,
@@ -155,11 +154,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#000',
     zIndex: 10,
   },
   headerTitle: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: '600',
     flex: 1,
@@ -195,7 +192,6 @@ const styles = StyleSheet.create({
     paddingTop: 24,
   },
   title: {
-    color: '#fff',
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 4,

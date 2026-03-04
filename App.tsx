@@ -1,5 +1,6 @@
 
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React, { useContext } from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -15,25 +16,31 @@ import RootNavigation from './src/navigation/RootNavigator';
 import { Provider } from 'react-redux';
 import { store } from './src/Redux/store';    
 
+// theme provider and context
+import { ThemeProvider, ThemeContext } from './src/context/ThemeContext';
+
 function SafeAreaWrapper() {
   const insets = useSafeAreaInsets();
+  const { colors, isDark } = useContext(ThemeContext);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top,}]}>
-      <RootNavigation />
-    </View>
+    <>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+      <View style={[styles.container, { paddingTop: insets.top, backgroundColor: colors.background }]}> 
+        <RootNavigation />
+      </View>
+    </>
   );
 }
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
    <Provider store={store}>
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <SafeAreaWrapper />
-    </SafeAreaProvider>
+    <ThemeProvider>
+      <SafeAreaProvider>
+        <SafeAreaWrapper />
+      </SafeAreaProvider>
+    </ThemeProvider>
    </Provider>  
   );
 }

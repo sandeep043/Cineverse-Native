@@ -1,11 +1,12 @@
   import { View, Text, StyleSheet,  ActivityIndicator } from 'react-native'
-import React, { Suspense, lazy } from 'react'
+import React, { Suspense, lazy, useContext } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import HomeScreen from '../screens/HomeScreen';
 // import SearchScreen from '../screens/SearchScreen';
 // import ProfileScreen from '../screens/ProfileScreen'; 
 // import FavoritesScreen from '../screens/FavouriteScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import { ThemeContext } from '../context/ThemeContext';
 
 const HomeScreen = lazy(() => import('../screens/HomeScreen'));
 const SearchScreen = lazy(() => import('../screens/SearchScreen'));
@@ -16,12 +17,13 @@ const FavoritesScreen = lazy(() => import('../screens/FavouriteScreen'));
 const Tab = createBottomTabNavigator();
 
 export default function HomeTabs() {
+  const { colors } = useContext(ThemeContext);
   return (
-    <Suspense fallback={<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><ActivityIndicator size="large" color="#0000ff" /></View>}>
+    <Suspense fallback={<View style={{flex:1,justifyContent:'center',alignItems:'center'}}><ActivityIndicator size="large" color={colors.primary} /></View>}>
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [styles.tabBar, { backgroundColor: colors.card }],
         tabBarShowLabel: false,
         tabBarItemStyle:{
           flex:1,
@@ -45,13 +47,13 @@ export default function HomeTabs() {
           if (focused) {
           
             return (
-              <View style={styles.activeTab}>
-                <Ionicons name={iconName} size={24} color="#00E5FF" />
-                <Text style={styles.activeText}>{route.name}</Text>
+              <View style={[styles.activeTab, { backgroundColor: colors.card }] }>
+                <Ionicons name={iconName} size={24} color={colors.primary} />
+                <Text style={[styles.activeText, { color: colors.primary }]}>{route.name}</Text>
               </View>
             );
           }
-          return <Ionicons name={iconName} size={24} color="gray" />;
+          return <Ionicons name={iconName} size={24} color={colors.mutedText || 'gray'} />;
         },
       })}
     >

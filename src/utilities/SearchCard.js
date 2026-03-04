@@ -1,7 +1,8 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { getImageUrl } from '../services/tmdbConfig';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ThemeContext } from '../context/ThemeContext';
 
 // A horizontal search result card styled similar to the provided screenshot.
 // Props:
@@ -9,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //   genres  - optional genre list from redux so we can map ids to names
 //   onPress - tap callback
 export default function SearchCard({ data, genres = [], onPress }) {
+  const { colors } = useContext(ThemeContext);
   const poster = data.poster_path ? getImageUrl(data.poster_path) : null;
   const title = data.title || data.name;
   const year = data.release_date ? data.release_date.split('-')[0] : '';
@@ -23,14 +25,14 @@ export default function SearchCard({ data, genres = [], onPress }) {
   const badgeColor = isPremium ? '#FFA500' : '#00E5FF';
 
   return (
-    <TouchableOpacity style={styles.mainContainer} onPress={onPress}>
+    <TouchableOpacity style={[styles.mainContainer, { backgroundColor: colors.card }]} onPress={onPress}>
       {poster && (
         <View style={styles.imageContainer}>
           <Image source={{ uri: poster }} style={styles.poster} />
           {rating !== null && (
             <View style={styles.ratingOverlay}>
               <Ionicons name="star" size={12} color="#FFD700" />
-              <Text style={styles.ratingText}>{rating}</Text>
+              <Text style={[styles.ratingText, { color: colors.text }]}>{rating}</Text>
             </View>
           )}
           <View style={[styles.badge, { backgroundColor: badgeColor }]}> 
@@ -40,10 +42,10 @@ export default function SearchCard({ data, genres = [], onPress }) {
       )}
 
       <View style={styles.textContainer}>
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
           {title}
         </Text>
-        <Text style={styles.details} numberOfLines={1}>
+        <Text style={[styles.details, { color: colors.mutedText }]} numberOfLines={1}>
           {year} {firstGenre ? `· ${firstGenre}` : ''}
         </Text>
       </View>
@@ -56,7 +58,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 12,
     padding: 8,
-    backgroundColor: '#1a1a1a',
     borderRadius: 10,
     overflow: 'hidden',
     shadowColor: '#000',

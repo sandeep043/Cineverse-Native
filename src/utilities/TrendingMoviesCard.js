@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getImageUrl } from '../services/tmdbConfig';
+import { ThemeContext } from '../context/ThemeContext';
 
 /**
  * Simple card component used for trending movies lists.
@@ -11,6 +12,7 @@ import { getImageUrl } from '../services/tmdbConfig';
  *   - onPress: callback when card is tapped
  */
 export default function TrendingMoviesCard({ movie, genres = [], onPress }) {
+  const { colors } = useContext(ThemeContext);
   const poster = movie.poster_path ? getImageUrl(movie.poster_path) : null;
   const title = movie.title || movie.name;
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
@@ -23,15 +25,15 @@ export default function TrendingMoviesCard({ movie, genres = [], onPress }) {
       {rating !== null && (
         <View style={styles.ratingContainer}>
           <Ionicons name="star" size={12} color="#FFD700" />
-          <Text style={styles.ratingText}>{rating}</Text>
+          <Text style={[styles.ratingText, { color: colors.text }]}>{rating}</Text>
         </View>
       )}
       <View style={styles.textContainer}>
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
           {title}
         </Text>
         {firstGenre ? (
-          <Text style={styles.genre} numberOfLines={1}>
+          <Text style={[styles.genre, { color: colors.mutedText }]} numberOfLines={1}>
             {firstGenre}
           </Text>
         ) : null}
