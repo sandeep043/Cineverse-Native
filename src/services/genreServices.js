@@ -34,10 +34,14 @@ export const getTopRatedMovies = async () => {
 } 
 
 
-export const Trending= async () => {
+export const Trending = async (page = 1) => {
     try {
-        const response = await api.get("/trending/all/day"); 
-        return response.data.results;
+        const response = await api.get("/trending/all/day", {
+            params: {
+                page: page
+            },
+        }); 
+        return response.data;
     }
     catch (error) {
         console.error("Error fetching trending movies:", error);
@@ -58,10 +62,6 @@ export const getMovieDetails = async (movieId) => {
 }
 
 
-
-
- 
-
 export const searchMovies = async (query) => {
     try {
         const response = await api.get("/search/movie", {   
@@ -77,4 +77,20 @@ export const searchMovies = async (query) => {
         console.error("Error searching movies:", error);
         throw error;
     }
-};
+}; 
+
+export const getMoviesByGenre = async (genreId) => {
+    try {
+        const response = await api.get("/discover/movie", { 
+            params: {
+                with_genres: genreId,
+                page:1, 
+            },
+        });
+        return response.data.results;
+    }   
+    catch (error) {
+        console.error(`Error fetching movies for genre ID ${genreId}:`, error);
+        throw error;
+    }   
+};  

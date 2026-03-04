@@ -8,6 +8,7 @@ const topRatedSlice = createSlice({
         topRatedMovies: [],
         loading: false,
         error: null,
+       
     },
     reducers: {
         setTopRatedMovies: (state, action) => {

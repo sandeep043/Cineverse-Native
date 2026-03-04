@@ -3,7 +3,8 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native'; 
 import HomeTabs from './HomeTabs'; 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
-// import MovieDetailsScreen from '../screens/MovieDetailsScreen'; 
+
+const MovieListScreen = React.lazy(() => import('../screens/movieListScreen'));
 
 
 const MovieDetailsScreen= lazy(() => import('../screens/MovieDetailsScreen'));
@@ -19,12 +20,17 @@ export default function RootNavigator() {
       >
         <Screen.Screen name="HomeTabs" component={HomeTabs} /> 
 
-        
         <Screen.Screen name="MovieDetails" component={() => (
-         <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
-          <MovieDetailsScreen />
-            </Suspense>
-      )} />
+          <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+            <MovieDetailsScreen />
+          </Suspense>
+        )} />
+
+        <Screen.Screen name="MovieList" component={() => (
+          <Suspense fallback={<ActivityIndicator size="large" color="#0000ff" />}>
+            <MovieListScreen />
+          </Suspense>
+        )} />
       </Screen.Navigator>
     </NavigationContainer>
   )

@@ -1,5 +1,5 @@
 import {StyleSheet, View, Text, FlatList, ScrollView } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import HomeCoursel from '../utilities/HomeCoursel'
 import  SearchBar  from '../utilities/SearchBar'
 import MostpopularCard from '../utilities/MostpopularCard';
@@ -11,7 +11,7 @@ import { fetchPopularMoviesThunk } from '../Redux/Thunks/popularThunks';
 import { fetchTopRatedMoviesThunk } from '../Redux/Thunks/topRatedThunks';
 import { fetchTrendingMoviesThunk } from '../Redux/Thunks/trendingThunks'; 
 import { useNavigation } from '@react-navigation/native'; 
-
+import {fetchMoviesByGenreThunk} from '../Redux/Thunks/genreThunks';
 
 
 export default function HomeScreen() { 
@@ -22,12 +22,19 @@ export default function HomeScreen() {
   const { topRatedMovies, loading: topRatedLoading, error: topRatedError } = useSelector((state) => state.topRated); 
   const { trendingMovies, loading: trendingLoading, error: trendingError } = useSelector((state) => state.trending);  
   const { movieDetails, loading: movieDetailsLoading, error: movieDetailsError } = useSelector((state) => state.movieDetails);  
+  const { genreMovies, loading: genreMoviesLoading, error: genreMoviesError } = useSelector((state) => state.genreMovies);  
+
+  const [selectedGenre, setSelectedGenre] = useState(null); 
+
+
+     
 
   // console.log('Genres in HomeScreen:', genres); 
   // console.log('Popular Movies in HomeScreen:', popularMovies); 
   // console.log('Top Rated Movies in HomeScreen:', topRatedMovies); 
   // console.log('Trending Movies in HomeScreen:', trendingMovies);
-  // console.log('Movie Details in HomeScreen:', movieDetails);
+  // // console.log('Movie Details in HomeScreen:', movieDetails);
+  // console.log('Movies by Genre in HomeScreen:', genreMovies);
 
   useEffect(() => {
 
@@ -42,7 +49,21 @@ export default function HomeScreen() {
     // dispatch(fetchMovieDetailsThunk(movie.id));
   }
 
- 
+  const handleGenreSelect = useCallback((genre) => {
+    if (selectedGenre === genre.id) {
+     
+      return;
+    }
+    setSelectedGenre(genre.id);
+    dispatch(fetchMoviesByGenreThunk(genre.id));
+  }, [dispatch]);
+
+  const moviesToShow = selectedGenre ? genreMovies : popularMovies  ;
+ const sectionTitle = selectedGenre
+  ? `${genres.find(g => g.id === selectedGenre)?.name} Movies`
+  : "Most Popular";
+
+
   return (
     <View style={styles.mainContainer}>
       <ScrollView > 
@@ -50,16 +71,19 @@ export default function HomeScreen() {
        <SearchBar />
        {/* feed the carousel with popular movies once they're loaded */}
        <HomeCoursel data={topRatedMovies} />
-       <Categories categories={genres} />
+       <Categories categories={genres} 
+       onSelectGenre={handleGenreSelect}
+       selectedGenre={selectedGenre}
+       />
 
        {/* most popular horizontal strip */}
        <View style={styles.sectionHeader}>
-         <Text style={styles.sectionTitle}>Most popular</Text>
+         <Text style={styles.sectionTitle}>{sectionTitle}</Text>
          <Text style={styles.sectionAction}>See All</Text>
        </View>
-       {popularMovies && popularMovies.length > 0 && (
+       {moviesToShow && moviesToShow.length > 0 && (
          <FlatList
-           data={popularMovies}
+           data={moviesToShow}
            horizontal
            showsHorizontalScrollIndicator={false}
            keyExtractor={(item) => item.id.toString()}
@@ -73,7 +97,7 @@ export default function HomeScreen() {
        {/* trending horizontal strip */}
        <View style={styles.sectionHeader}>
          <Text style={styles.sectionTitle}>Trending</Text>
-         <Text style={styles.sectionAction}>See All</Text>
+         <Text style={styles.sectionAction} onPress={() => navigation.navigate('MovieList')}>See All</Text>
        </View>
        {trendingMovies && trendingMovies.length > 0 && (
          <FlatList
