@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {getGenres} from "../../services/genreServices"; 
+import {getGenres} from "../../services/genreServices";  
+import { getMoviesByGenre } from "../../services/genreServices";    
 
 
 export const fetchGenresThunk = createAsyncThunk(
@@ -12,5 +13,19 @@ export const fetchGenresThunk = createAsyncThunk(
             return rejectWithValue(error.message);
         }
     }
-);
+); 
+
+
+export  const fetchMoviesByGenreThunk = createAsyncThunk(
+    "genre/fetchMoviesByGenre",
+    async (genreId, { rejectWithValue }) => {   
+        try {
+            const movies = await getMoviesByGenre(genreId);
+            return movies;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }       
+    }
+);  
+
 

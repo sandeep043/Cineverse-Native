@@ -1,11 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {getTopRatedMovies} from "../../services/genreServices";  
+import { Trending } from "../../services/genreServices";
+
 
 export const fetchTrendingMoviesThunk = createAsyncThunk(
     "trending/fetchTrendingMovies",
-    async (_, { rejectWithValue }) => {
+    async (page = 1, { rejectWithValue }) => {
         try {
-            const trendingMovies = await getTopRatedMovies();
+            const trendingMovies = await Trending(page);
            
             return trendingMovies;
         }
