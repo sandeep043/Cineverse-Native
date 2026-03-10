@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getImageUrl } from '../services/tmdbConfig';
-import { ThemeContext } from '../context/ThemeContext';
+import { useTheme } from '../hooks/useTheme';
 
 /**
  * Card used in horizontal "Most popular" lists.
@@ -10,7 +10,7 @@ import { ThemeContext } from '../context/ThemeContext';
  * genres: optional array of genre objects (id/name) so the card can display the first genre.
  */
 export default function MostpopularCard({ movie, genres = [], onPress }) {
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useTheme();
   const poster = movie.poster_path ? getImageUrl(movie.poster_path) : null;
   const title = movie.title || movie.name;
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;

@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, FlatList, ScrollView, Switch } from 'react-native'
+import {StyleSheet, View, Text, FlatList, ScrollView, Switch, Alert } from 'react-native'
 import React, { useCallback, useEffect, useState, useContext } from 'react'
 import HomeCoursel from '../utilities/HomeCoursel'
 import  SearchBar  from '../utilities/SearchBar'
@@ -15,8 +15,7 @@ import {fetchMoviesByGenreThunk} from '../Redux/Thunks/genreThunks';
 
 // consume theme context to drive colors and toggle
 import { ThemeContext } from '../context/ThemeContext';
-
-
+import { Pressable } from 'react-native';
 export default function HomeScreen() { 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -41,18 +40,40 @@ export default function HomeScreen() {
   }, [dispatch]); 
 
  const onPressMovie = (movie) => { 
+  // Alert.alert("MovieCard", `pressed movie:${movie.id}`)
+  console.log("MovieCard", `pressed movie:${movie.id}`)
     navigation.navigate('MovieDetails', { movieId: movie.id });
-    // dispatch(fetchMovieDetailsThunk(movie.id));
+
+   
   }
 
+//   const handleGenreSelect = (genre) => {
+//      console.log('Selected genre------------------------------------:, withOutcallback', genre);
+//   setSelectedGenre(genre.id);
+//    dispatch(fetchMoviesByGenreThunk(genre.id));
+// }; 
+
+
+const handleHomeTouch =()=>{
+  // Alert.alert("Home Screen","HomeScreen Toched -------------" )
+  console.log("Home Screen","HomeScreen Toched -------------");
+} 
+
+const handleScrollToch =()=>{
+  // Alert.alert("scrollView", "scrollView Toched 0--------------")
+  console.log("scrollView", "scrollView Toched--------------")
+} 
+
+
+
   const handleGenreSelect = useCallback((genre) => {
+    console.log('Selected genre------------------------------------:, withcallback', genre);
     if (selectedGenre === genre.id) {
-     
       return;
     }
     setSelectedGenre(genre.id);
     dispatch(fetchMoviesByGenreThunk(genre.id));
-  }, [dispatch]);
+  }, [dispatch,selectedGenre]);
 
   const moviesToShow = selectedGenre ? genreMovies : popularMovies  ;
  const sectionTitle = selectedGenre
@@ -61,9 +82,9 @@ export default function HomeScreen() {
 
 
   return (
-    <View style={[styles.mainContainer, { backgroundColor: colors.background }]}>      
+    <View style={[styles.mainContainer, { backgroundColor: colors.background }]} onTouchStart={handleHomeTouch}>      
       {/* simple toggle placed at top right of HomeScreen */}
-      <View style={styles.toggleRow}>
+      <View style={styles.toggleRow} onPress={handleHomeTouch}>
         <Text style={[styles.toggleLabel, { color: colors.text }]}>Dark mode</Text>
         <Switch
           value={isDark}
@@ -72,7 +93,13 @@ export default function HomeScreen() {
         />
       </View>
 
-      <ScrollView > 
+      <ScrollView 
+      onStartShouldSetResponder={()=> true}
+      onTouchStart={(e)=>{
+        e.stopPropagation();
+        handleScrollToch()
+      }}
+      > 
 
        <SearchBar />
        {/* feed the carousel with popular movies once they're loaded */}
@@ -90,12 +117,19 @@ export default function HomeScreen() {
        {moviesToShow && moviesToShow.length > 0 && (
          <FlatList
            data={moviesToShow}
-           horizontal
+           horizontal55
            showsHorizontalScrollIndicator={false}
            keyExtractor={(item) => item.id.toString()}
            contentContainerStyle={{paddingVertical: 8}}
            renderItem={({item}) => (
-             <MostpopularCard movie={item} onPress={onPressMovie} genres={genres} />
+            
+          <View
+         onStartShouldSetResponder={() => true}
+         onTouchStart={(e) => e.stopPropagation()}
+         >
+          <MostpopularCard movie={item} onPress={onPressMovie} genres={genres} />
+       </View>
+          
            )}
          />
        )}
@@ -113,7 +147,8 @@ export default function HomeScreen() {
            keyExtractor={(item) => item.id.toString()}
            contentContainerStyle={{paddingVertical: 8}}
            renderItem={({item}) => (
-             <TrendingMoviesCard movie={item} genres={genres} onPress={onPressMovie} />
+              <TrendingMoviesCard movie={item} onPress={onPressMovie} genres={genres} />
+           
            )}
          />
        )} 

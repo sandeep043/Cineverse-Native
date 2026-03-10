@@ -38,6 +38,7 @@ const SAMPLE_DATA = [
 ]
 
 export default function HomeCoursel({ data = SAMPLE_DATA, onPressItem }) {
+  console.log("coursal rendering------------------------------")
   const { colors } = useContext(ThemeContext);
   const scrollRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)

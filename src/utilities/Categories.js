@@ -1,8 +1,12 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, memo } from 'react'
 import { ThemeContext } from '../context/ThemeContext';
 
-export default function Categories({ categories, onSelectGenre, selectedGenre }) {
+
+
+const Categories = memo(( {categories, onSelectGenre, selectedGenre})=>{ 
+  console.log("rendering Categories----------------------")
+
   const { colors } = useContext(ThemeContext);
 
   return (
@@ -18,8 +22,8 @@ export default function Categories({ categories, onSelectGenre, selectedGenre })
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => {
           const isSelected = selectedGenre === item.id;
-
-          return (
+ 
+          return (                                                                                                                                                                                                                                                                              
             <TouchableOpacity
               onPress={() => onSelectGenre(item)}
               style={{
@@ -39,4 +43,12 @@ export default function Categories({ categories, onSelectGenre, selectedGenre })
       />
     </View>
   )
-}
+
+  
+ 
+
+})  
+
+
+
+export default Categories;

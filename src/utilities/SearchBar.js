@@ -1,9 +1,10 @@
 import { StyleSheet, View, Text ,TextInput, Pressable } from 'react-native'
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext , memo} from 'react'
 import { ThemeContext } from '../context/ThemeContext';
 
 
-export default function SearchBar() {
+const SearchBar = memo(()=>{
+   console.log('🔍 [SearchBar] rendered');
     const [searchText, setSearchText] = useState('');
     const { colors } = useContext(ThemeContext);
 
@@ -25,7 +26,7 @@ export default function SearchBar() {
     </View>
    
   )
-} 
+})
 
 const styles = StyleSheet.create({
 searchContainer: {
@@ -47,4 +48,6 @@ searchInput: {
         padding: 10,
     },
 
-});
+}); 
+
+export default SearchBar;

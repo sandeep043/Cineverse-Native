@@ -17,6 +17,7 @@ export default function MovieListScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch(); 
   const isFetchingRef = useRef(false);
+    const { colors } = useContext(ThemeContext);
 
   const {
     trendingMovies,
@@ -53,7 +54,7 @@ export default function MovieListScreen() {
   }, [dispatch, loadingMore, page, totalPages]);
 
   const renderMovieItem = ({ item }) => {
-    const { colors } = useContext(ThemeContext);
+  
     return (
       <TouchableOpacity style={[styles.card, { backgroundColor: colors.card }]}> 
         <Image
@@ -80,7 +81,7 @@ export default function MovieListScreen() {
     );
   };
 
-  const { colors } = useContext(ThemeContext);
+  // const { colors } = useContext(ThemeContext);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}> 
@@ -105,7 +106,7 @@ export default function MovieListScreen() {
           onEndReachedThreshold={0.2}
           ListFooterComponent={
             loadingMore ? (
-              <ActivityIndicator size="small" color={colors.primary} />
+              <ActivityIndicator size="large" color={colors.primary} />
             ) : null
           }
         />
