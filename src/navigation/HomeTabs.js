@@ -4,14 +4,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // import HomeScreen from '../screens/HomeScreen';
 // import SearchScreen from '../screens/SearchScreen';
 // import ProfileScreen from '../screens/ProfileScreen'; 
-// import FavoritesScreen from '../screens/FavouriteScreen';
+// import FavoritesScreen from '../screens/FavoriteScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import { ThemeContext } from '../context/ThemeContext';
 
 const HomeScreen = lazy(() => import('../screens/HomeScreen'));
 const SearchScreen = lazy(() => import('../screens/SearchScreen'));
 const ProfileScreen = lazy(() => import('../screens/ProfileScreen'));
-const FavoritesScreen = lazy(() => import('../screens/FavouriteScreen'));
+const FavoritesScreen = lazy(() => import('../screens/FavoriteScreen'));
 
 
 const Tab = createBottomTabNavigator();

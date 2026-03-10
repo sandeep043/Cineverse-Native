@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native'
-import React, { useEffect, useContext } from 'react' 
+import React, { useEffect, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,19 +17,34 @@ import { getImageUrl, BACKDROP_SIZE } from '../services/tmdbConfig';
 import LinearGradient from 'react-native-linear-gradient'; 
 import { setMovieDetails } from '../Redux/slices/movieDetailsSlice';
 import { ThemeContext } from '../context/ThemeContext';
+import { addToFavorites, removeFromFavorites } from '../Redux/slices/favoriteSlice';
 
 import { Clock4 ,Film } from 'lucide-react-native';
 
 
 
-export default function MovieDetailsScreen() { 
+export default function MovieDetailsScreen() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { movieDetails, loading: movieDetailsLoading, error: movieDetailsError } = useSelector((state) => state.movieDetails);
   const { colors } = useContext(ThemeContext);
+  const favorites = useSelector((state) => state.favorite.favorites);
 
   // grab movieId from params
   const { movieId } = navigation.getState().routes.find(route => route.name === 'MovieDetails').params;
+
+  // Check if current movie is in favorites
+  const isFavorite = favorites.some((fav) => fav.id === movieDetails.id);
+
+  // Handler for toggling favorite
+  const handleToggleFavorite = () => {
+    if (!movieDetails.id) return;
+    if (isFavorite) {
+      dispatch(removeFromFavorites(movieDetails));
+    } else {
+      dispatch(addToFavorites(movieDetails));
+    }
+  };
 
   useEffect(() => {
     if (movieId) {
@@ -89,8 +104,12 @@ export default function MovieDetailsScreen() {
           <Ionicons name="arrow-back" size={28} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, {color: colors.text}]} numberOfLines={1}>{title}</Text>
-        <TouchableOpacity onPress={() => { /* TODO: favorite toggle */ }}>
-          <Ionicons name="heart-outline" size={28} color={colors.text} />
+        <TouchableOpacity onPress={handleToggleFavorite}>
+          <Ionicons
+            name={isFavorite ? "heart" : "heart-outline"}
+            size={28}
+            color={isFavorite ? "#FF0000" : colors.text}
+          />
         </TouchableOpacity>
       </View>
 
